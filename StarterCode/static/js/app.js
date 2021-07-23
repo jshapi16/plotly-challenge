@@ -1,3 +1,11 @@
+//Things left to do: figure out how to get data to switch when i do the event change. 
+//Figure out where to add update plotly/restyle plotly. 
+//figure out how to update the demographic information. 
+//figure out how to make the otu id and concentration appear on the hover for the bubble and bar chart
+//figure out the rest of the gauge chart...
+//
+
+
 //-----------------------INITIALIZED FUNCTION--------------//
 //initializes the page with a default value
 function init() {
@@ -22,17 +30,11 @@ function init() {
 d3.selectAll("#selDataset").on("change", optionChanged);
 
 //function for optionChanged that changes the id
-function optionChanged() {
-    var dropdownMenu = d3.select("#selDataset");
-    var dataset = dropdownMenu.property("value");
-    d3.json("samples.json").then((data) => {
-        var samples = data.samples
-        var id = samples[0].id
-    createBarChart(id);
-    createBubbleChart(id);
-    displayMetadata(id);
-    updatePlotly(id);
-    });
+function optionChanged(newSample) {
+    createBarChart(newSample);
+    createBubbleChart(newSample);
+    displayMetadata(newSample);
+    updatePlotly(newSample);
 };
 
 //--------------------------BAR CHART SETUP------------------------//
@@ -139,6 +141,10 @@ function displayMetadata(data){
     d3.json("samples.json").then((data) => {
         console.log(data)
         var metadata = data.metadata
+        var labels = Object.keys(metadata[0])
+        console.log(labels)
+        var values = Object.values(metadata[0])
+        console.log(values)
     });
 };
 

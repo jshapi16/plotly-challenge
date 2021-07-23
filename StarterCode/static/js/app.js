@@ -4,6 +4,11 @@
 //get the values for the bar chart: top 10 sample values and otu ids
 function createBarChart(id) {
     console.log(`This is the bar chart for ${id}`)
+    d3.json("samples.json").then((data) => {
+        var samples = data.samples
+        var topTenSamples = sample.sample_values
+    });
+
 };
 
 
@@ -22,7 +27,6 @@ function displayMetadata(data){
     });
 };
 
-d3.selectAll("#selDataset").on("change", init);
 //initializes the page with a default value
 function init() {
     var dropDownMenu = d3.select("#selDataset");
@@ -40,6 +44,12 @@ function init() {
         createBubbleChart(selectedID);
         displayMetadata(selectedID);
     }); 
+};
+
+function optionChanged(selectedID) {
+    createBarChart(selectedID);
+    createBubbleChart(selectedID);
+    displayMetadata(selectedID);
 };
 
 init();

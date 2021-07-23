@@ -6,7 +6,27 @@ function createBarChart(id) {
     console.log(`This is the bar chart for ${id}`)
     d3.json("samples.json").then((data) => {
         var samples = data.samples
-        var topTenSamples = sample.sample_values
+        var sampleValues = samples.sample_values
+        console.log(samplesValues);
+        //for loop to get the top 10 values
+
+
+
+        // var topTenSamples = samples.sample_values.slice(0, 10);
+        // console.log(topTenSamples);
+        // var topTenOtuLabels = []
+        // var topTenOtuIds = []
+
+        
+
+        // for (var i=0; i<=10; i++) {
+        //     topTenSamples.push(samples.sample_values[i]);
+        //     console.log(topTenSamples);
+            // topTenOtuLabels.push(samples.otu_labels);
+            // console.log(topTenOtuLabels);
+            // topTenOtuIds.push(samples.otu_ids)
+            // console.log(topTenOtuIds)
+        // };
     });
 
 };

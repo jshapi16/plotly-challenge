@@ -1,52 +1,4 @@
 //-----------------------INITIALIZED FUNCTION--------------//
-
-//--------------------------BAR CHART SETUP------------------------//
-//get the values for the bar chart: top 10 sample values and otu ids
-function createBarChart(id) {
-    console.log(`This is the bar chart for ${id}`)
-    d3.json("samples.json").then((data) => {
-        var samples = data.samples
-        var sampleValues = samples.sample_values
-        console.log(samplesValues);
-        //for loop to get the top 10 values
-
-
-
-        // var topTenSamples = samples.sample_values.slice(0, 10);
-        // console.log(topTenSamples);
-        // var topTenOtuLabels = []
-        // var topTenOtuIds = []
-
-        
-
-        // for (var i=0; i<=10; i++) {
-        //     topTenSamples.push(samples.sample_values[i]);
-        //     console.log(topTenSamples);
-            // topTenOtuLabels.push(samples.otu_labels);
-            // console.log(topTenOtuLabels);
-            // topTenOtuIds.push(samples.otu_ids)
-            // console.log(topTenOtuIds)
-        // };
-    });
-
-};
-
-
-//--------------------BUBBLE CHART SETUP----------------//
-//function for bubble chart
-function createBubbleChart(id) {
-    console.log(`This is the bubble chart for ${id}`)
-};
-
-
-//---------------------------DISPLAY DEMOGRAPHIC DATA-------------------//
-function displayMetadata(data){
-    d3.json("samples.json").then((data) => {
-        console.log(data)
-        var metadata = data.metadata
-    });
-};
-
 //initializes the page with a default value
 function init() {
     var dropDownMenu = d3.select("#selDataset");
@@ -66,10 +18,128 @@ function init() {
     }); 
 };
 
-function optionChanged(selectedID) {
-    createBarChart(selectedID);
-    createBubbleChart(selectedID);
-    displayMetadata(selectedID);
+//on change get new data
+d3.selectAll("#selDataset").on("change", optionChanged);
+
+//function for optionChanged that changes the id
+function optionChanged() {
+    var dropdownMenu = d3.select("#selDataset");
+    var dataset = dropdownMenu.property("value");
+    d3.json("samples.json").then((data) => {
+        var samples = data.samples
+        var id = samples[0].id
+    createBarChart(id);
+    createBubbleChart(id);
+    displayMetadata(id);
+    updatePlotly(id);
+    });
+};
+
+//--------------------------BAR CHART SETUP------------------------//
+//get the values for the bar chart: top 10 sample values and otu ids
+function createBarChart(id) {
+    console.log(`This is the bar chart for ${id}`)
+    d3.json("samples.json").then((data) => {
+        //create variables to store the otu, sample, and id information
+        var samples = data.samples
+        var sampleValues = samples[0].sample_values
+        var otuId = samples[0].otu_ids
+        var otuLabel = samples[0].otu_labels
+        var sampleId = samples[0].id
+
+        //for loop to get the top 10 values
+        var topTenSamples = sampleValues.slice(0,10).reverse();
+        var topTenOtuId = otuId.slice(0,10).map(topTenOtuId => `OTU ${topTenOtuId}`).reverse();
+        var topTenOtuLabel = otuLabel.slice(0,10).reverse();
+        console.log(topTenOtuId)
+        console.log(topTenSamples)
+        console.log(topTenOtuLabel)
+
+        //Make bar chart using plotly
+        var trace1 = {
+            y: topTenOtuId,
+            x: topTenSamples,
+            text: topTenOtuLabel,
+            type: "bar",
+            orientation: 'h'
+        }
+        data = [trace1]
+        var layout = {
+            title: `Top ten belly button bacteria samples for: ${sampleId}`,
+        }
+
+        Plotly.newPlot("bar", data, layout);
+    });
+};
+
+//--------------------BUBBLE CHART SETUP----------------//
+//function for bubble chart
+function createBubbleChart(id) {
+    console.log(`This is the bubble chart for ${id}`)
+    d3.json("samples.json").then((data) => {
+        //create variables to store the otu, sample, and id information
+        var samples = data.samples
+        var sampleValues = samples[0].sample_values
+        var otuId = samples[0].otu_ids
+        var otuLabel = samples[0].otu_labels
+        var sampleId = samples[0].id
+
+        var trace1 = {
+            x: otuId,
+            y: sampleValues,
+            text: otuLabel,
+            mode: 'markers',
+            marker: {
+                color: otuId,
+                size: sampleValues
+            }
+        };
+
+        layout = {title: `Bubble Chart of otu samples for ${sampleId}`};
+
+        data = [trace1];
+
+        Plotly.newPlot("bubble", data, layout);
+    });
+};
+
+// Update the restyled plot's values
+function updatePlotly(newdata) {
+    Plotly.restyle("bubble", "values", [newdata]);
+  }
+
+//------------------GAUGE CHART---------------------//
+// function createGuageChart(id) {
+//     console.log(`This is the gauge chart for ${id}`)
+//     d3.json("samples.json").then((data) => {
+//         var metadata = data.metadata
+//         var samples = data.samples
+//         var wfreq = metadata[6].wfreq
+//         var sampleId = samples[0].id
+//         console.log(wfreq)
+
+//     var data = [{
+//        domain: {x: [0, 1], y:[0, 1]},
+//         value: wfreq,
+//         title: {text: `Belly button washing frequency for ${sampleId}`},
+//         type: "indicator",
+//         mode: "gauge+number",
+//         gauge: {axis: {range: [null, 9]}}
+//     }];
+
+//     layout = {width: 600, height: 500};
+
+//     Plotly.newPlot("gauge", data, layout);
+//     });
+// };
+
+
+//---------------------------DISPLAY DEMOGRAPHIC DATA-------------------//
+function displayMetadata(data){
+    d3.json("samples.json").then((data) => {
+        console.log(data)
+        var metadata = data.metadata
+    });
 };
 
 init();

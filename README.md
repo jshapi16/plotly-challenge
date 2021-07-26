@@ -32,5 +32,8 @@ Figure 6: Participant 940 bubble chart
 ![figure 7](https://github.com/jshapi16/plotly-challenge/blob/main/Images/941_bubble_chart.png?raw=true)
 Figure 7: Participant 941 bubble chart
 
-![Figure 8](https://github.com/jshapi16/plotly-challenge/blob/main/Images/940_bar_graph.png?raw=true) ![figure 9](https://github.com/jshapi16/plotly-challenge/blob/main/Images/941_bar_graph.png?raw=true) 
-Figure 8: Participant 941 bubble chart
+![Figure 8](https://github.com/jshapi16/plotly-challenge/blob/main/Images/940_bar_graph.png?raw=true) 
+Figure 8: Participant 940 bubble chart
+
+![figure 9](https://github.com/jshapi16/plotly-challenge/blob/main/Images/941_bar_graph.png?raw=true) 
+Figure 9: Participant 941 bubble chart

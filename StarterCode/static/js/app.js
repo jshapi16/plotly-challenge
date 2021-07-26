@@ -1,12 +1,4 @@
-//Things left to do: figure out how to get data to switch when i do the event change. 
-//Figure out where to add update plotly/restyle plotly. 
-//figure out how to update the demographic information. 
-//figure out how to make the otu id and concentration appear on the hover for the bubble and bar chart
-//figure out the rest of the gauge chart...
-//
-
-
-//-----------------------INITIALIZED FUNCTION--------------//
+//-----------INITIALIZED FUNCTION WITH DEFAULT DATA--------------//
 //initializes the page with a default value
 function init() {
     var dropDownMenu = d3.select("#selDataset");
@@ -17,25 +9,20 @@ function init() {
                 .append("option")
                 .text(sample)
                 .property("value", sample);
-
         });
         var selectedID = sampleNames[0]
         createBarChart(selectedID);
         createBubbleChart(selectedID);
         displayMetadata(selectedID);
-    }); 
-};
+    })
+}
 
-//on change get new data
-d3.selectAll("#selDataset").on("change", optionChanged);
-
-//function for optionChanged that changes the id
+//function for optionChanged (from html) that changes the id
 function optionChanged(newSample) {
-    createBarChart(newSample);
-    createBubbleChart(newSample);
-    displayMetadata(newSample);
-    updatePlotly(newSample);
-};
+    createBarChart(newSample)
+    createBubbleChart(newSample)
+    displayMetadata(newSample)
+}
 
 //--------------------------BAR CHART SETUP------------------------//
 //get the values for the bar chart: top 10 sample values and otu ids
@@ -44,10 +31,12 @@ function createBarChart(id) {
     d3.json("samples.json").then((data) => {
         //create variables to store the otu, sample, and id information
         var samples = data.samples
-        var sampleValues = samples[0].sample_values
-        var otuId = samples[0].otu_ids
-        var otuLabel = samples[0].otu_labels
-        var sampleId = samples[0].id
+        var idArray = samples.filter(key => key.id == id)
+        var sampleValues = idArray[0].sample_values
+        console.log(sampleValues)
+        var otuId = idArray[0].otu_ids
+        var otuLabel = idArray[0].otu_labels
+        var sampleId = idArray[0].id
 
         //for loop to get the top 10 values
         var topTenSamples = sampleValues.slice(0,10).reverse();
@@ -67,7 +56,9 @@ function createBarChart(id) {
         }
         data = [trace1]
         var layout = {
-            title: `Top ten belly button bacteria samples for: ${sampleId}`,
+            title: {text: `Top ten belly button bacteria samples for: ${sampleId}`},
+            xaxis: {title: "OTU Sample Concentration"},
+            yaxis: {title: "OTU Sample ID"}
         }
 
         Plotly.newPlot("bar", data, layout);
@@ -81,10 +72,11 @@ function createBubbleChart(id) {
     d3.json("samples.json").then((data) => {
         //create variables to store the otu, sample, and id information
         var samples = data.samples
-        var sampleValues = samples[0].sample_values
-        var otuId = samples[0].otu_ids
-        var otuLabel = samples[0].otu_labels
-        var sampleId = samples[0].id
+        var idArray = samples.filter(key => key.id == id)
+        var sampleValues = idArray[0].sample_values
+        var otuId = idArray[0].otu_ids
+        var otuLabel = idArray[0].otu_labels
+        var sampleId = idArray[0].id
 
         var trace1 = {
             x: otuId,
@@ -97,18 +89,14 @@ function createBubbleChart(id) {
             }
         };
 
-        layout = {title: `Bubble Chart of otu samples for ${sampleId}`};
+        layout = {title: `Bubble Chart of otu samples for ${sampleId}`,
+        };
 
         data = [trace1];
 
         Plotly.newPlot("bubble", data, layout);
     });
 };
-
-// Update the restyled plot's values
-function updatePlotly(newdata) {
-    Plotly.restyle("bubble", "values", [newdata]);
-  }
 
 //------------------GAUGE CHART---------------------//
 // function createGuageChart(id) {
@@ -137,13 +125,22 @@ function updatePlotly(newdata) {
 
 
 //---------------------------DISPLAY DEMOGRAPHIC DATA-------------------//
-function displayMetadata(data){
+function displayMetadata(id){
     d3.json("samples.json").then((data) => {
         console.log(data)
         var metadata = data.metadata
-        var labels = Object.keys(metadata[0])
+        var idArray = metadata.filter(key => key.id == id)
+        console.log(idArray)
+        var metadataTable = d3.select("#sample-metadata")
+        metadataTable.html("");
+        //loop through labels and values and append them
+        Object.entries(idArray[0]).forEach(([key, value]) => {
+            metadataTable.append("h6").text(`${key}: ${value}`)
+        }) 
+
+        var labels = Object.keys(idArray[0])
         console.log(labels)
-        var values = Object.values(metadata[0])
+        var values = Object.values(idArray[0])
         console.log(values)
     });
 };

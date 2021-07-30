@@ -14,6 +14,7 @@ function init() {
         createBarChart(selectedID);
         createBubbleChart(selectedID);
         displayMetadata(selectedID);
+        createGuageChart(selectedID);
     })
 }
 
@@ -22,6 +23,7 @@ function optionChanged(newSample) {
     createBarChart(newSample)
     createBubbleChart(newSample)
     displayMetadata(newSample)
+    createGuageChart(newSample)
 }
 
 //--------------------------BAR CHART SETUP------------------------//
@@ -98,30 +100,30 @@ function createBubbleChart(id) {
     });
 };
 
-//------------------GAUGE CHART---------------------//
-// function createGuageChart(id) {
-//     console.log(`This is the gauge chart for ${id}`)
-//     d3.json("samples.json").then((data) => {
-//         var metadata = data.metadata
-//         var samples = data.samples
-//         var wfreq = metadata[6].wfreq
-//         var sampleId = samples[0].id
-//         console.log(wfreq)
+// ------------------GAUGE CHART---------------------//
+function createGuageChart(id) {
+    console.log(`This is the gauge chart for ${id}`)
+    d3.json("samples.json").then((data) => {
+        var metadata = data.metadata
+        var samples = data.samples
+        var wfreq = metadata[6].wfreq
+        var sampleId = samples[0].id
+        console.log(wfreq)
 
-//     var data = [{
-//        domain: {x: [0, 1], y:[0, 1]},
-//         value: wfreq,
-//         title: {text: `Belly button washing frequency for ${sampleId}`},
-//         type: "indicator",
-//         mode: "gauge+number",
-//         gauge: {axis: {range: [null, 9]}}
-//     }];
+    var data = [{
+       domain: {x: [0, 1], y:[0, 1]},
+        value: wfreq,
+        title: {text: `Belly button washing frequency for ${sampleId}`},
+        type: "indicator",
+        mode: "gauge+number",
+        gauge: {axis: {range: [null, 9]}}
+    }];
 
-//     layout = {width: 600, height: 500};
+    layout = {width: 600, height: 500};
 
-//     Plotly.newPlot("gauge", data, layout);
-//     });
-// };
+    Plotly.newPlot("gauge", data, layout);
+    });
+};
 
 
 //---------------------------DISPLAY DEMOGRAPHIC DATA-------------------//

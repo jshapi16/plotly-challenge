@@ -1,5 +1,5 @@
 # plotly-challenge
-An interactive dashboard for bellybutton bacteria
+An interactive dashboard for bellybutton bacteria. Full deployment: https://jshapi16.github.io/plotly-challenge/
 
 
 This repository uses Javascript, d3.json and Plotly to create an interactive visualization dashboard. Using data from a belly button bacteria study, the dashboard loads with default data and using a dropdown menu, automatically refreshes depending on what study participant the user would like to view.
